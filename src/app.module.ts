@@ -21,6 +21,7 @@ import { AppService } from "./app.service";
 import { AuthModule } from "./core/auth/auth.module";
 import { UserModule } from "./core/user/user.module";
 import { ProfileModule } from "./core/profile/profile.module";
+import { InvitationModule } from "./core/invitation/invitation.module";
 
 // Modules – infrastructure
 import { AuditModule } from "./infrastructure/audit/audit.module";
@@ -69,6 +70,7 @@ import { NotificationModule } from "./notifications/notification.module";
 import { User } from "./core/user/entities/user.entity";
 import { EmailVerification } from "./core/auth/entities/email-verification.entity";
 import { Wallet } from "./core/auth/entities/wallet.entity";
+import { Invitation } from "./core/invitation/entities/invitation.entity";
 
 // Oracle entities
 import { SignedPayload } from "./blockchain/oracle/entities/signed-payload.entity";
@@ -269,6 +271,7 @@ import { IdempotencyRecord } from "./common/idempotency/entities/idempotency-rec
             NotificationAnalytics,
             GrantfoxToken,
             MaintainerAggregateMetric,
+            Invitation,
           ],
           // Issue #141: the soft-delete cascade subscriber has to be listed
           // here for TypeORM to register it. It ships with an empty target
@@ -293,6 +296,7 @@ import { IdempotencyRecord } from "./common/idempotency/entities/idempotency-rec
     AuthModule,
     UserModule,
     ProfileModule,
+    InvitationModule,
     AuditModule,
     OracleModule,
     PortfolioModule,
