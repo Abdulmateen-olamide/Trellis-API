@@ -58,6 +58,7 @@ import { IdempotencyModule } from "./common/idempotency/idempotency.module";
 import { BillingModule } from "./billing/billing.module";
 // Modules – payments (plugin system)
 import { PaymentsModule } from "./payments/payments.module";
+import { PaymentOperation } from "./payments/entities/payment-operation.entity";
 // Modules – integration sandbox mode (deterministic fakes; opt-in)
 import { SandboxModule } from "./sandbox/sandbox.module";
 import { RateLimitingModule } from "./rate-limiting/rate-limiting.module";
@@ -83,6 +84,7 @@ import { ComputeResult } from "./infrastructure/audit/entities/compute-result.en
 import { ProvenanceRecord } from "./infrastructure/audit/entities/provenance-record.entity";
 import { OracleSubmission } from "./infrastructure/audit/entities/oracle-submission.entity";
 import { SensitiveActionEvent } from "./infrastructure/audit/entities/sensitive-action-event.entity";
+import { SensitiveActionChainHead } from "./infrastructure/audit/entities/sensitive-action-chain-head.entity";
 
 // Portfolio entities
 import { Portfolio } from "./investment/portfolio/entities/portfolio.entity";
@@ -247,6 +249,7 @@ import { InvariantReportEntity } from "./monitoring/invariant-monitor/entities/i
             ProvenanceRecord,
             OracleSubmission,
             SensitiveActionEvent,
+            SensitiveActionChainHead,
             Portfolio,
             PortfolioAsset,
             Transaction,
@@ -286,6 +289,10 @@ import { InvariantReportEntity } from "./monitoring/invariant-monitor/entities/i
             NotificationAnalytics,
             GrantfoxToken,
             MaintainerAggregateMetric,
+            RetryOperation,
+            PauseScope,
+            PauseAuditLog,
+            InvariantReportEntity,
             Invitation,
             RetryOperation,
             PauseScope,
