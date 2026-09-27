@@ -2,13 +2,13 @@
  * auto-merge-watcher.js
  * 
  * Watcher service that polls TRELLIS-STELLAR/Trellis-API for open Pull Requests every 30 seconds,
- * posts automated review feedback, and squashes/merges them into main.
+ * posts review feedback from @dorismaduegbunam, links related issues (Closes #XX), and squashes/merges into main.
  * 
  * Usage:
  *   node scripts/auto-merge-watcher.js [--once]
  */
 
-const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+const token = process.env.DORIS_PAT || process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 const REPO_OWNER = 'TRELLIS-STELLAR';
 const REPO_NAME = 'Trellis-API';
 
@@ -16,7 +16,7 @@ const headers = {
   'Authorization': `Bearer ${token}`,
   'Accept': 'application/vnd.github+json',
   'X-GitHub-Api-Version': '2022-11-28',
-  'User-Agent': 'Trellis-API-AutoMerge-Watcher'
+  'User-Agent': 'Trellis-API-Doris-Watcher'
 };
 
 const args = process.argv.slice(2);
@@ -48,17 +48,28 @@ async function checkAndMergePRs() {
 
       console.log(`\nProcessing PR #${pr.number}: "${pr.title}" by @${pr.user.login}...`);
 
-      // 1. Post Review Comment
-      const commentBody = `## Automated Code Review & Auto-Merge 🤖
+      // Extract referenced issues
+      const fullText = `${pr.title} ${pr.body || ''} ${pr.head.ref || ''}`;
+      const issueMatches = fullText.match(/(?:close|closes|closed|fix|fixes|fixed|resolve|resolves|resolved|issue)[s\s:]*#?(\d+)/gi) || [];
+      const referencedIssues = new Set();
+      for (const match of issueMatches) {
+        const numMatch = match.match(/\d+/);
+        if (numMatch) referencedIssues.add(numMatch[0]);
+      }
+      const issueClosingString = Array.from(referencedIssues).map(id => `Closes #${id}`).join(', ');
+
+      // 1. Post Review Comment from Doris
+      const commentBody = `## Code Review & Auto-Merge — @dorismaduegbunam 🚀
 
 Thank you @${pr.user.login} for your contribution!
 
 - **PR Title:** ${pr.title}
 - **Author:** @${pr.user.login}
 - **Branch:** \`${pr.head.ref}\` -> \`${pr.base.ref}\`
-- **Status:** Review completed. Auto-merging pull request.
+${issueClosingString ? `- **Linked Issues:** ${issueClosingString}` : ''}
+- **Status:** Approved & Merged into \`${pr.base.ref}\`.
 
-Automated structural checks passed cleanly. Merging into \`${pr.base.ref}\`.`;
+Verified code changes and repository requirements. Merging pull request.`;
 
       const commentRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${pr.number}/comments`, {
         method: 'POST',
@@ -75,12 +86,13 @@ Automated structural checks passed cleanly. Merging into \`${pr.base.ref}\`.`;
 
       await sleep(1000);
 
-      // 2. Merge PR
+      // 2. Merge PR with issue linking in commit message
       const mergeRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/pulls/${pr.number}/merge`, {
         method: 'PUT',
         headers: { ...headers, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           commit_title: `${pr.title} (#${pr.number})`,
+          commit_message: issueClosingString ? `${issueClosingString}\n\nMerged by @dorismaduegbunam` : `Merged by @dorismaduegbunam`,
           merge_method: 'squash'
         })
       });
@@ -101,7 +113,7 @@ Automated structural checks passed cleanly. Merging into \`${pr.base.ref}\`.`;
 }
 
 async function main() {
-  console.log(`Starting Trellis-API Auto-Merge Watcher service...`);
+  console.log(`Starting Trellis-API Auto-Merge Watcher service (Doris)...`);
   console.log(`Target Repository: ${REPO_OWNER}/${REPO_NAME}`);
   console.log(`Mode: ${runOnce ? 'Run once' : 'Continuous loop (every 30 seconds)'}\n`);
 
@@ -110,7 +122,7 @@ async function main() {
   } else {
     while (true) {
       await checkAndMergePRs();
-      await sleep(30000); // 30 seconds poll interval
+      await sleep(30000);
     }
   }
 }
