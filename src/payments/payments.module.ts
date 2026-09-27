@@ -8,6 +8,7 @@ import {
 } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { DiscoveryModule, DiscoveryService, Reflector } from "@nestjs/core";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { Horizon } from "@stellar/stellar-sdk";
 import { GrantfoxAdapter } from "./adapters/grantfox/grantfox.adapter";
 import { StellarAdapter } from "./adapters/stellar/stellar.adapter";

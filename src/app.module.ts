@@ -58,6 +58,7 @@ import { IdempotencyModule } from "./common/idempotency/idempotency.module";
 import { BillingModule } from "./billing/billing.module";
 // Modules – payments (plugin system)
 import { PaymentsModule } from "./payments/payments.module";
+import { PaymentOperation } from "./payments/entities/payment-operation.entity";
 // Modules – integration sandbox mode (deterministic fakes; opt-in)
 import { SandboxModule } from "./sandbox/sandbox.module";
 import { RateLimitingModule } from "./rate-limiting/rate-limiting.module";
