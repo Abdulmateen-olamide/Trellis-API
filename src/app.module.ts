@@ -140,6 +140,14 @@ import { DisasterRecoveryModule } from "./infrastructure/disaster-recovery/disas
 import { ImportModule } from "./infrastructure/import/import.module";
 // Modules – workers
 import { WorkersModule } from "./infrastructure/workers/workers.module";
+// Modules – retry scheduler
+import { RetrySchedulerModule } from "./infrastructure/retry-scheduler/retry-scheduler.module";
+// Modules – pause control
+import { PauseControlModule } from "./infrastructure/pause-control/pause-control.module";
+// Modules – invariant monitor
+import { InvariantMonitorModule } from "./monitoring/invariant-monitor/invariant-monitor.module";
+// Modules – permission matrix
+import { PermissionMatrixModule } from "./common/guard/permission-matrix.module";
 
 // Guards
 import { APP_FILTER } from "@nestjs/core";
@@ -168,6 +176,13 @@ import { AccessibilityGuard } from "./common/guard/accessibility.guard";
 import { GrantfoxToken } from "./core/auth/entities/grantfox-token.entity";
 // Idempotency entity
 import { IdempotencyRecord } from "./common/idempotency/entities/idempotency-record.entity";
+// Retry scheduler entity
+import { RetryOperation } from "./infrastructure/retry-scheduler/entities/retry-operation.entity";
+// Pause control entities
+import { PauseScope } from "./infrastructure/pause-control/entities/pause-scope.entity";
+import { PauseAuditLog } from "./infrastructure/pause-control/entities/pause-audit-log.entity";
+// Invariant monitor entity
+import { InvariantReportEntity } from "./monitoring/invariant-monitor/entities/invariant-report.entity";
 
 @Module({
   imports: [
@@ -264,6 +279,10 @@ import { IdempotencyRecord } from "./common/idempotency/entities/idempotency-rec
             NotificationAnalytics,
             GrantfoxToken,
             MaintainerAggregateMetric,
+            RetryOperation,
+            PauseScope,
+            PauseAuditLog,
+            InvariantReportEntity,
           ],
           synchronize: true,
           logging: true,
@@ -326,6 +345,10 @@ import { IdempotencyRecord } from "./common/idempotency/entities/idempotency-rec
     NotificationModule,
     DisasterRecoveryModule,
     ImportModule,
+    RetrySchedulerModule,
+    PauseControlModule,
+    InvariantMonitorModule,
+    PermissionMatrixModule,
   ],
 
   controllers: [AppController, QuotaAdminController],
