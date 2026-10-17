@@ -205,9 +205,12 @@ export class SnapshotService {
     try {
       actualManifest = await this.captureRestoreManifest();
     } catch (error) {
-      const detail = error instanceof Error ? error.message : String(error);
+      this.logger.error(
+        'Critical snapshot manifest capture failed',
+        error instanceof Error ? error.stack : String(error),
+      );
       result.repairSteps.push(
-        `Critical data verification failed: ${detail}. Restore the missing schema or database connection, then retry.`,
+        'Critical data verification could not read one or more required tables. Check database connectivity and schema readiness, then retry.',
       );
       return result;
     }
@@ -239,9 +242,12 @@ export class SnapshotService {
         );
       }
     } catch (error) {
-      const detail = error instanceof Error ? error.message : String(error);
+      this.logger.error(
+        `Search index rebuild failed for snapshot ${dto.snapshotId}`,
+        error instanceof Error ? error.stack : String(error),
+      );
       result.repairSteps.push(
-        `Search index rebuild failed: ${detail}. Restore Elasticsearch connectivity and rerun verification.`,
+        'Search index rebuild failed. Check Elasticsearch health and server logs, then rerun verification.',
       );
     }
 
